@@ -1,5 +1,6 @@
 import { Progress, Text } from "@mantine/core";
 
+// @ts-ignore
 const Uploading = ({ progressValue }) => {
     return (
         <div className="shadow-lg w-80 mx-auto my-40 px-10 py-2 rounded-xl">

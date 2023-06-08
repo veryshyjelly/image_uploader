@@ -10,14 +10,18 @@ import Uploaded from "./uploaded";
 export default function Home() {
   const [progress, setProgress] = useState(0);
   const [isuploading, setisUploading] = useState(false);
-  const [result, setResult] = useState({ file: "" });
+  const [result, setResult] = useState({ link: "" });
+
+  const baseurl = typeof window !== 'undefined' && window.location.origin
+    ? window.location.origin
+    : '';
 
   return (
     <>
       {!isuploading && <Upload setResult={setResult}
         setisUploading={setisUploading} setProgress={setProgress} />}
-      {isuploading && result.file === "" && <Uploading progressValue={progress} />}
-      {result.file !== "" && <Uploaded result={result} />}
+      {isuploading && result.link === "" && <Uploading progressValue={progress} />}
+      {result.link !== "" && <Uploaded link={baseurl + result.link} />}
     </>
   )
 
@@ -25,6 +29,10 @@ export default function Home() {
 
 // @ts-ignore
 const Upload = ({ setisUploading, setProgress, setResult }) => {
+  const baseurl = typeof window !== 'undefined' && window.location.origin
+    ? window.location.origin
+    : '';
+
   const setFileHandler = async (file: File) => {
     console.log(file);
     const formdata = new FormData();
@@ -33,15 +41,15 @@ const Upload = ({ setisUploading, setProgress, setResult }) => {
 
     let res = await axios.request({
       method: "post",
-      url: "https://httpbin.org/post",
+      url: baseurl + "/upload",
       data: formdata,
       onUploadProgress: (p) => {
         setProgress((p.loaded * 100) / (p.total || 100))
         console.log(p);
       }
     });
-    setResult(res.data.files);
-    console.log(res.data.files);
+    console.log(res.data);
+    setResult(res.data);
   }
 
   return (
@@ -58,7 +66,7 @@ const Upload = ({ setisUploading, setProgress, setResult }) => {
               borderColor: isDragReject ? "red" : "#97BEF4",
             }}>
             <input {...getInputProps()} />
-            <Image src={"image.svg"} width={100} mx={"auto"} alt="Image" />
+            <Image src={"/home/image.svg"} width={100} mx={"auto"} alt="Image" />
             <Text c={"#BDBDBD"} fz={"12px"} mt={25}>Drag & Drop your image here</Text>
           </div>}</Dropzone>
       <Text c={"#BDBDBD"} fz={"12px"}>Or</Text>
